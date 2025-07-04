@@ -50,10 +50,10 @@ class Event :
         self.event_type = event_type
         self.data = data
 
-    def __lt__(self, other):
+    def __lt__(self, other): #need this for heap comparision
         return self.timestamp < other.timestamp
 
-stations = {name: Station(name) for name in STATION_NAMES}
+stations = {name: Station(name) for name in STATION_NAMES} #station object dictionary
 
 services = { 
     "S1": Service("S1", ['Kanjurmarg', 'Santacruz','Vileparle','Ghatkopar'], [1,3,5,7]),
@@ -102,13 +102,13 @@ while event_queue:
             continue #service terminated 
         
         current_station = service.current_station()
-        s_idx = station_index[current_station] 
+        s_idx = station_index[current_station] #station index needed as station and service indices are not one to one
 
         deboard = service.buckets[service.current_stop]
         stations[current_station].buckets[s_idx] += deboard
         service.buckets[service.current_stop] = 0
 
-        #vanish
+        #vanish event addition 
         heapq.heappush(event_queue, Event(CURRENT_TIME +3, VANISH_EVENT, (current_station, deboard)))
         service.mark_crossed()
 
