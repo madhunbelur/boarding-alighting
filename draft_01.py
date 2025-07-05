@@ -2,7 +2,11 @@ import csv
 import heapq 
 import random
 
-STATION_NAMES = ['Kanjurmarg', 'Vikhroli', 'Ghatkopar', 'Kurla', 'Andheri', 'Santacruz', 'Vileparle']
+STATION_NAMES = [
+     "Churchgate", "Marine Lines", "Charni Road", "Grant Road", "Mumbai Central", "Dadar (W)",
+     "CST", "Masjid", "Sandhurst Road", "Byculla", "Dadar (C)", "Kurla", "Ghatkopar", "Thane", "Kalyan"
+]
+
 NUM_STATION = len(STATION_NAMES)
 OD_EVENT = 'OD'
 ARRIVAL_EVENT = 'ARRIVAL'
@@ -55,11 +59,13 @@ class Event :
 
 stations = {name: Station(name) for name in STATION_NAMES} #station object dictionary
 
-services = { 
-    "S1": Service("S1", ['Kanjurmarg', 'Santacruz','Vileparle','Ghatkopar'], [1,3,5,7]),
-    "S2": Service("S2", ['Vikhroli', 'Ghatkopar', 'Andheri', 'Kurla'], [2,4,6,8]),
-    "S3": Service("S3", ['Andheri', 'Kanjurmarg','Vileparle', 'Santacruz'], [1,4,7,10])
+services = {
+     "WR1": Service("WR1", ["Churchgate", "Charni Road", "Mumbai Central", "Dadar (W)"], [1, 3, 5, 7]),
+     "WR2": Service("WR2", ["Dadar (W)", "Grant Road", "Marine Lines","Churchgate"], [2, 4, 6, 8]),
+     "CR1": Service("CR1", ["CST", "Byculla", "Dadar (C)", "Kurla","Thane"], [1, 3, 5, 7, 9]),
+     "CR2": Service("CR2", ["Kalyan", "Thane", "Ghatkopar", "Kurla","Dadar (C)", "CST"], [1, 3, 5, 7, 9, 11]),
 }
+
 
 event_queue = []
 event_log = []
