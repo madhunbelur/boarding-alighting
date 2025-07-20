@@ -1,0 +1,16 @@
+- note here important points. (Madhu  started on 15th July 2025)
+- arrange git-ignore to not take log files
+- and all *generated* files (maybe from a temp subdirectory?)
+- modify python program to write detailed log files
+- station and od to take from an input csv file
+- all input files to either be inside an inp subdirectory
+  or from files saying inp1-sdflks.csv, inp2-asdflskdfaj.txt, etc.
+- all input files being either csv or txt, but not xls, etc.
+- ensure stripping of spaces
+- ensure that stations that appear in stnList (of supply) *MATCHES* with
+    origin/destinations
+- ensure no vanish event at originating station, and some dual of this..??
+- hhmmss into and from
+- ensure that each service has just one unique set of stations. No duplications
+- if semi-duplication (meaning an underscore, etc), then split the service into two
+  with say upper and lower parts as names. (upper as the top part in the excel/csv column)

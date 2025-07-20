@@ -1,0 +1,16 @@
+SrNum,timestamp,dummycolumn,dummycolumn,origin,destination,total
+dummyrow1,minutes,dummy,dummy,dummy,dummy,dummy
+dummyrow2,timestamp at origin,dummy,dummy,dummy,dummy,dummy
+dummyrow3,dummy,dummy,dummy,dummy,dummy,100
+1,10,dummy,dummy,CST,Thane,35
+2,12,dummy,dummy,Byculla,CST,45
+3,43,dummy,dummy,DadarC,DadarC,55
+4,24,dummy,dummy,Kurla,CST,60
+5,15,dummy,dummy,CST,Thane,65
+6,25,dummy,dummy,Thane,DadarC,65
+7,35,dummy,dummy,Thane,Byculla,65
+8,36,dummy,dummy,Thane,Byculla,65
+9,46,dummy,dummy,CST,Byculla,65
+10,45,dummy,dummy,Thane,CST,65
+11,55,dummy,dummy,Thane,Kurla,65
+12,65,dummy,dummy,Kurla,DadarC,54
