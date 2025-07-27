@@ -67,13 +67,14 @@ for ke,val in servicesDict.items():
    print(val.servNum)
 
 class Event :
-    def __init__(self, timing, stn, servNum, etype, data1, data2):
+    def __init__(self, timing, stn, servNum, etype, destn, bucket , vanishEvent):
         self.timing = timing
         self.stn = stn
         self.servNum = servNum
         self.etype = etype
-        self.data1 = data1
-        self.data2 = data2
+        self.destn = destn ### vanish and OD uses it 
+        self.bucket = bucket ### only OD event uses this 
+        self.vanishEvent = vanishEvent ### links to vanish event only arrival event uses it 
 
     def __lt__(self, other): #need this for heap comparision
         return self.timing < other.timing
@@ -83,7 +84,11 @@ def updateBuckets(ev):
        # in services MORE than event-time
        # alight from the service
        stnObjDict[ev.stn].buckets[ev.stn] += servicesDict[ev.servNum].buckets[ev.stn] # added
+       ### adding de-boarding people to vanish bucket 
+       VanEvent = ev.vanishEvent
+       VanEvent.bucket = servicesDict[ev.servNum].buckets[ev.stn]
        servicesDict[ev.servNum].buckets[ev.stn] = 0 # emptied
+
        for stn in stnList: # at the stn corresponding to event, update for *EACH* station to/from service
           if servicesDict[ev.servNum].stnTimingsDict[stn] > ev.timing:
              # board: station's that
@@ -93,10 +98,11 @@ def updateBuckets(ev):
           else: print('not boarded', ev.stn, ev.timing)
    elif ev.etype == 'passVanish':
        print('came into passVanish')
-       stnObjDict[ev.stn].buckets[ev.stn] = 0 # at station stn, empty its own bucket (exitting passengers)
+       ### subtracting no of people from station bucket
+       stnObjDict[ev.stn].buckets[ev.stn] -= ev.bucket # at station stn, empty its own bucket (exitting passengers)
    elif ev.etype == 'passAppear':
        print('came into passAppear')
-       stnObjDict[ev.stn].buckets[ev.data1] += ev.data2
+       stnObjDict[ev.stn].buckets[ev.destn] += ev.bucket
 
 # Read passenger demand data
 with open(demODpass, newline='') as file:
@@ -106,9 +112,9 @@ with open(demODpass, newline='') as file:
       if row_num >=3:
         timing = int(row[1])
         orig = row[4]
-        dest = row[5] # data1
-        pcount = int(row[6]) # data2
-        EventsList.append(Event(timing, orig, 0, 'passAppear', dest, pcount))
+        dest = row[5] #passenger count
+        pcount = int(row[6]) # destination
+        EventsList.append(Event(timing, orig, 0, 'passAppear', dest, pcount, None))
 
 
 stnNums = len(stnList)
@@ -129,8 +135,10 @@ for serv in servicesLst:
     stnIndx = 0
     for timing in serv.stnTimings:
         stn = stnList[stnIndx]
-        EventsList.append(Event(timing, stn, serv.servNum, 'servArrival', 0, 0))
-        EventsList.append(Event(timing+50, stn, serv.servNum, 'passVanish', 0, 0))
+        EventsList.append(Event(timing, stn, serv.servNum, 'servArrival', 0, 0, None))
+        EventsList.append(Event(timing+50, stn, serv.servNum, 'passVanish', 0, 0, None))
+        ### linking arrival event to its corresponding vanish event
+        EventsList[-2].vanishEvent = EventsList[-1]
         stnIndx += 1
 
 EventsList.sort(key = lambda x: x.timing)
@@ -152,8 +160,8 @@ with open("log/event_log.csv", "w", newline= "") as f:
     writer = csv.writer(f)
     writer.writerow(["Timestamp", "Station", "Service", "Event", "Destination", "People count"])
     for event in EventsList:
-        writer.writerow([event.timing, event.stn, event.servNum, event.etype, event.data1, event.data2])
+        writer.writerow([event.timing, event.stn, event.servNum, event.etype, event.destn, event.bucket])
 
 
-print("Done. Event log saved to event_log.csv. ")
+print("Done. Event log saved to log/event_log.csv. ")
 
